@@ -1,0 +1,76 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct Node
+{
+  int data;
+  struct Node *left, *right;
+};
+
+struct Node* newNode(int data)
+{
+  struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+  node->data = data;
+  node->left = node->right = NULL;
+  return (node);
+}
+
+struct Node* insertLevelOrder(int arr[], struct Node* root, int i, int n)
+{
+  if (i < n)
+  {
+    struct Node* temp = newNode(arr[i]);
+    root = temp;
+
+    root->left = insertLevelOrder(arr, root->left, 2 * i + 1, n);
+
+    root->right = insertLevelOrder(arr, root->right, 2 * i + 2, n);
+  }
+  return root;
+}
+
+struct Node* buildTree(int t[], int n)
+{
+  struct Node* root = (struct Node*)malloc(sizeof(struct Node));
+  root = insertLevelOrder(t, root, 0, n);
+  return(root);
+}
+void printr(struct Node* root)
+{
+  if(root == NULL)
+  {
+    return;
+  }
+   printf("%d ",root->data);
+   printr(root->right);
+}
+void printl(struct Node* root)
+{
+  if(root == NULL)
+  {
+    return;
+  }
+  printl(root->left);
+  printf("%d ",root->data);
+}
+void printTopView(struct Node* root)
+{
+printl(root);
+printr(root->right);
+}
+
+int main()
+{
+  int a[50], n, i;
+  struct Node* root = NULL;
+  scanf("%d", &n);
+  if(n>0)
+  {
+    for(i=0;i<n;i++)
+      scanf("%d", &a[i]);
+    root = buildTree(a, n);
+    printTopView(root);
+  }
+  return 0;
+}
+
